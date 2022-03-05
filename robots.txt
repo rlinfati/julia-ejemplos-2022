@@ -1,0 +1,4 @@
+Sitemap: https://rlinfati.github.io/julia-examples/sitemap.xml
+
+User-agent: *
+Disallow:
