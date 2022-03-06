@@ -1,68 +1,63 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-   <link rel="stylesheet" href="https://rlinfati.github.io/julia-examples//libs/highlight/github.min.css">
+   <link rel="stylesheet" href="/julia-examples/libs/highlight/github.min.css">
    
-  <link rel="stylesheet" href="https://rlinfati.github.io/julia-examples//css/franklin.css">
-<link rel="stylesheet" href="https://rlinfati.github.io/julia-examples//css/poole_lanyon.css">
-<link rel="stylesheet" href="https://rlinfati.github.io/julia-examples//css/adjust.css">
-<link rel="icon" href="https://rlinfati.github.io/julia-examples//assets/favicon.png">
 
-   <title>Menu 3</title>  
+  <link href="/julia-examples/css/franklin.css" rel="stylesheet">
+<link href="/julia-examples/css/vela.css" rel="stylesheet">
+<script src="/julia-examples/libs/vela/jquery.min.js"></script>
+
+<link rel="icon" href="/julia-examples/assets/favicon.png">
+
+
+  <title>Franklin Example | Vela</title>
 </head>
 <body>
-<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<div class="main-nav slideout-menu slideout-menu-left" id="menu">
+  <div class="flex-container">
+    <span class="sidebar-brand">
+      <h3 style='font-size: 25px'>Vela Template</h3>
+    </span>
+  </div> <!-- class="flex-container" -->
 
-<!-- Toggleable sidebar -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-item">
-    <p>Apuntes de Clases</p>
-  </div>
   <nav class="sidebar-nav">
-    <a class="sidebar-nav-item " href="https://rlinfati.github.io/julia-examples//">Home</a>
-    <nav class="sidebar-nav">
-      <a class="sidebar-nav-item " href="https://rlinfati.github.io/julia-examples//">Home</a>
-      <a class="sidebar-nav-item " href="https://rlinfati.github.io/julia-examples//menu1/">menu1</a>
-      <a class="sidebar-nav-item " href="https://rlinfati.github.io/julia-examples//menu2/">menu2</a>
-      <a class="sidebar-nav-item active" href="https://rlinfati.github.io/julia-examples//menu3/">menu3</a>
-      <a class="sidebar-nav-item " href="https://rlinfati.github.io/julia-examples//menu4/">menu4</a>
-    </nav>
-    <a class="sidebar-nav-item " href="https://rlinfati.github.io/julia-examples//menu1/">menu1</a>
-    <a class="sidebar-nav-item " href="https://rlinfati.github.io/julia-examples//menu2/">menu2</a>
-    <a class="sidebar-nav-item active" href="https://rlinfati.github.io/julia-examples//menu3/">menu3</a>
-    <a class="sidebar-nav-item " href="https://rlinfati.github.io/julia-examples//menu4/">menu4</a>
+    <ul class="metismenu"  id="metismenu" >
+      <li><a href="/julia-examples/index.html">Home</a></li>
+      <li><a href="/julia-examples/menu1/">Code blocks</a></li>
+      <li><a href="" class="has-arrow">Topic</a>
+        <ul>
+          <li><a href="/julia-examples/menu2/">More goodies</a></li>
+        </ul>
+      </li>
+      <li><a href="/julia-examples/menu3/">Tags</a></li>
+    </ul>
   </nav>
-  <div class="sidebar-item">
-    <p>&copy; Rodrigo Linfati.</p>
-  </div>
-</div>
+</div> <!-- main nav menu -->
 
-<!-- Wrap is the content to shift when toggling the sidebar. We wrap the
-content to avoid any CSS collisions with our real content. -->
-<div class="wrap">
-  <div class="masthead">
-    <div class="container">
-      <h3 class="masthead-title">
-        <a href="https://rlinfati.github.io/julia-examples/" title="Home">Apuntes de Clases</a>
-        <small>usando Julia en Pluto</small>
-      </h3>
+<main id="panel" class="slidout-panel slideout-panel-left">
+  <div class="toggle-button hamburger hamburger--spin">
+    <div class="hamburger-box">
+      <div class="hamburger-inner"></div>
     </div>
   </div>
+  <h1 class="page title">Menu 3</h1>
+  <hr>
 
-  <div class="container content">
+
 
 <!-- Content appended here -->
 <div class="franklin-content"><h1 id="working_with_tags"><a href="#working_with_tags" class="header-anchor">Working with tags</a></h1>
 <p><strong>Example</strong>:</p>
 <ul>
-<li><p>page with tag <a href="/tag/syntax/"><code>syntax</code></a></p>
+<li><p>page with tag <a href="/julia-examples/tag/syntax/"><code>syntax</code></a></p>
 </li>
-<li><p>page with tag <a href="/tag/image/"><code>image</code></a></p>
+<li><p>page with tag <a href="/julia-examples/tag/image/"><code>image</code></a></p>
 </li>
-<li><p>page with tag <a href="/tag/code/"><code>code</code></a></p>
+<li><p>page with tag <a href="/julia-examples/tag/code/"><code>code</code></a></p>
 </li>
 </ul>
 
@@ -139,17 +134,18 @@ end</code></pre>
 &lt;&#33;-- 2: simple list item plugging in path &#43; title --&gt;
 &lt;li&gt;&lt;a href&#61;&quot;/&#36;rpath/&quot;&gt;&#36;title&lt;/a&gt;&lt;/li&gt;</code></pre>
 <div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Rodrigo Linfati. Last modified: March 06, 2022.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
-      </div>  <!-- div: content container -->
-    </div> <!-- wrap -->
-    
-    
-        <script src="{{website_url}}/libs/highlight/highlight.pack.js"></script>
+  </main> <!-- end of id=main -->
+  <script src="/julia-examples/libs/vela/metisMenu.min.js"></script>
+  <script src="/julia-examples/libs/vela/slideout.min.js"></script>
+  
+  
+    <script src="/julia-examples/libs/highlight/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
 
-    
-    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
-  </body>
+  
+</body>
 </html>
