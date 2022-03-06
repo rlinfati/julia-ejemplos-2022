@@ -20,7 +20,7 @@
 <div class="main-nav slideout-menu slideout-menu-left" id="menu">
   <div class="flex-container">
     <span class="sidebar-brand">
-      <h3 style='font-size: 25px'>Vela Template</h3>
+      <h3 style='font-size: 25px'>Apuntes de Clases</h3>
     </span>
   </div> <!-- class="flex-container" -->
 
@@ -34,6 +34,13 @@
         </ul>
       </li>
       <li><a href="/julia-examples/menu3/">Tags</a></li>
+        <ul>
+          <li><a href="/julia-examples/menu2/">More goodies</a></li>
+            <ul>
+              <li><a href="/julia-examples/menu2/">More goodies</a></li>
+            </ul>
+          </ul>
+    <li><a href="/julia-examples/menu4/">menu4</a></li>
     </ul>
   </nav>
 </div> <!-- main nav menu -->
@@ -52,7 +59,7 @@
 <!-- Content appended here -->
 <div class="franklin-content">
 <h1 id="working_with_code_blocks"><a href="#working_with_code_blocks" class="header-anchor">Working with code blocks</a></h1>
-
+<div class="franklin-toc"><ol><li><a href="#working_with_code_blocks">Working with code blocks</a><ol><li><a href="#live_evaluation_of_code_blocks">Live evaluation of code blocks</a></li><li><a href="#including_scripts">Including scripts</a></li></ol></li></ol></div>
 <h2 id="live_evaluation_of_code_blocks"><a href="#live_evaluation_of_code_blocks" class="header-anchor">Live evaluation of code blocks</a></h2>
 <p>If you would like to show code as well as what the code outputs, you only need to specify where the script corresponding to the code block will be saved.</p>
 <p>Indeed, what happens is that the code block gets saved as a script which then gets executed. This also allows for that block to not be re-executed every time you change something <em>else</em> on the page.</p>
@@ -103,7 +110,6 @@ end</code></pre>
 <p><strong>Note</strong>: paths specification matters, see <a href="https://tlienart.github.io/franklindocs/code/index.html#more_on_paths">the docs</a> for details.</p>
 <p>Using this approach with the <code>generate_results.jl</code> file also makes sure that all the code on your website works and that all results match the code which makes maintenance easier.</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Rodrigo Linfati. Last modified: March 06, 2022.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
