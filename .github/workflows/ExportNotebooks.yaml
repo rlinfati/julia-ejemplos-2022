@@ -1,0 +1,30 @@
+name: Export Notebooks
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: julia-actions/setup-julia@v1
+      - uses: julia-actions/cache@v1
+      - uses: actions/cache@v2
+        with:
+          path: notebooks-cache
+          key:          ${{ runner.os }}-${{ hashFiles('JuliaProject.toml', '.github/workflows/ExportNotebooks.yaml') }}-${{ hashFiles('notebooks/**/*.jl') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('JuliaProject.toml', '.github/workflows/ExportNotebooks.yaml') }}
+      - run: |
+          julia -e 'import Pkg
+          Pkg.add("JuMP")
+          Pkg.add("Plots")
+          Pkg.add("PlutoSliderServer")
+          import PlutoSliderServer
+          PlutoSliderServer.github_action("notebooks";
+            Export_cache_dir = "notebooks-cache",
+            Export_output_dir = "public",
+          )'
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
