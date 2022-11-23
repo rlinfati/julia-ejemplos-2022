@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.0
+# v0.19.12
 
 using Markdown
 using InteractiveUtils
@@ -78,41 +78,41 @@ begin
     mCSP = JuMP.Model(GLPK.Optimizer)
     @variable(mCSP, x[1:patron_n] >= 0)
     @objective(mCSP, Min, sum(jumbo_costo * x))
-    @constraint(mCSP, r[i in 1:bobina_n], sum(patrones[i, :] .* x) >= bobina_demanda[i])
+    @constraint(mCSP, r1[i in 1:bobina_n], sum(patrones[i, :] .* x) >= bobina_demanda[i])
 
     JuMP.optimize!(mCSP)
 end
 
 # ╔═╡ 46028570-c4ab-4cd8-9fd0-46772e9fb57c
-begin
-    while true
-        println("* Problema Maestro = Cutting Stock Problema Relax")
-        println("  z = ", JuMP.objective_value(mCSP))
-        for j in 1:patron_n
-            println("  Patron ", j, " = ", patrones[:, j], " usado ", JuMP.value(x[j]), " veces")
-        end
-
-        yvar = JuMP.all_constraints(mCSP, AffExpr, MOI.GreaterThan{Float64})
-        yval = JuMP.dual.(yvar)
-        println("  Dual Piezas = ", yval)
-
-        nuevo_patron = calculaPatron(bobina_n, bobina_ancho, jumbo_ancho, yval, jumbo_costo)
-
-        if nuevo_patron === nothing
-            break
-        end
-
-        patron_n += 1
-        patrones = [patrones nuevo_patron]
-
-        newX = @variable(mCSP; base_name = "x[$patron_n]", lower_bound = 0)
-        push!(x, newX)
-        JuMP.set_objective_coefficient(mCSP, newX, jumbo_costo)
-        JuMP.set_normalized_coefficient.(r, newX, nuevo_patron)
-
-        JuMP.optimize!(mCSP)
+while true
+    println("* Problema Maestro = Cutting Stock Problema Relax")
+    println("  z = ", JuMP.objective_value(mCSP))
+    for j in 1:patron_n
+        println("  Patron ", j, " = ", patrones[:, j], " usado ", JuMP.value(x[j]), " veces")
     end
 
+    yval = JuMP.dual.(r1)
+    println("  Dual Piezas = ", yval)
+
+    nuevo_patron = calculaPatron(bobina_n, bobina_ancho, jumbo_ancho, yval, jumbo_costo)
+
+    if nuevo_patron === nothing
+        break
+    end
+
+    patron_n += 1
+    patrones = [patrones nuevo_patron]
+
+    newX = @variable(mCSP; base_name = "x[$patron_n]", lower_bound = 0)
+    push!(x, newX)
+    JuMP.set_objective_coefficient(mCSP, newX, jumbo_costo)
+    JuMP.set_normalized_coefficient.(r1, newX, nuevo_patron)
+
+    JuMP.optimize!(mCSP)
+end
+
+# ╔═╡ 7203e722-d5a8-4d0e-a408-b14509bea07d
+begin
     JuMP.set_integer.(x)
     JuMP.optimize!(mCSP)
     println("* Problema Cutting Stock")
@@ -130,3 +130,4 @@ end
 # ╠═5751108d-6a44-4d33-9386-5d811638c6f0
 # ╠═c47d8551-2317-493c-a67a-0c892fa6dd82
 # ╠═46028570-c4ab-4cd8-9fd0-46772e9fb57c
+# ╠═7203e722-d5a8-4d0e-a408-b14509bea07d

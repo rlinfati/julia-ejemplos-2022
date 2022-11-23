@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.0
+# v0.19.12
 
 using Markdown
 using InteractiveUtils
@@ -82,6 +82,23 @@ begin
     nothing
 end
 
+# ╔═╡ ae26d6a4-25c0-4807-ac4a-4c3d4a439c39
+begin
+    @show JuMP.dual.([r1, r2, r3])
+    @show JuMP.shadow_price.([r1, r2, r3])
+
+    @show JuMP.reduced_cost.(x)
+end
+
+# ╔═╡ a43f4e19-50e5-4100-a7e4-fc9b7920a410
+JuMP.lp_sensitivity_report(m)
+
+# ╔═╡ e707eb41-05e0-4399-8c73-6d2ffec38345
+JuMP.write_to_file(m, "model.lp")
+
+# ╔═╡ 0f0b3911-0f08-4d5a-969a-fe1896e68eeb
+JuMP.read_from_file("model.lp")
+
 # ╔═╡ Cell order:
 # ╟─ca2d345e-ac76-11ec-2164-8f36e66bc097
 # ╠═ca2d347e-ac76-11ec-01ab-61d4b5dd60ba
@@ -93,3 +110,7 @@ end
 # ╠═fb641ebc-03fb-4792-94e0-6820bbe82793
 # ╠═8b49b72d-e39d-4b26-b892-d2c55174814b
 # ╠═c89a9a9e-b463-4e94-9501-ad3fe1a99101
+# ╠═ae26d6a4-25c0-4807-ac4a-4c3d4a439c39
+# ╠═a43f4e19-50e5-4100-a7e4-fc9b7920a410
+# ╠═e707eb41-05e0-4399-8c73-6d2ffec38345
+# ╠═0f0b3911-0f08-4d5a-969a-fe1896e68eeb

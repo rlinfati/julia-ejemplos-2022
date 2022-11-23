@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.0
+# v0.19.12
 
 using Markdown
 using InteractiveUtils
@@ -10,10 +10,10 @@ let
     Pkg.UPDATED_REGISTRY_THIS_SESSION[] = true
     Pkg.activate(; temp = false)
     Pkg.add([
-            Pkg.PackageSpec("JuMP")
-            Pkg.PackageSpec("GLPK")
-            Pkg.PackageSpec("Distributions")
-        ] )
+        Pkg.PackageSpec("JuMP")
+        Pkg.PackageSpec("HiGHS")
+        Pkg.PackageSpec("Distributions")
+    ])
     Pkg.status()
     md"""
     **NOTE:** remove this cell/code
@@ -22,20 +22,20 @@ let
 end
 
 # ╔═╡ 12077c04-7df7-4d8a-ba0f-812d2b8189c3
-using JuMP, GLPK, Distributions, Statistics
+using JuMP, Gurobi, Distributions, Statistics
 
 # ╔═╡ 22ffa5b6-111c-4752-a2e9-9cc26080ab00
 struct FacilityLocation
-    nC::Int
-    nF::Int
-    nP::Int
-    cF::Array{Float64,1}
-    qF::Array{Float64,1}
-    coorC::Array{Float64,2}
-    coorF::Array{Float64,2}
-    de::Array{Any,1}
-    cC::Array{Float64,1}
-    distm::Array{Float64,2}
+    nC::Int # number of customers
+    nF::Int # number of facilities
+    nP::Int # p
+    cF::Array{Float64,1} # fixed cost of facilities
+    qF::Array{Float64,1} # capacity of facilities
+    coorC::Array{Float64,2} # x,y of customers
+    coorF::Array{Float64,2} # x,y of facilities
+    de::Array{Any,1} # demand
+    cC::Array{Float64,1} # cost of unsatisfied demand
+    distm::Array{Float64,2} # distance matrix
 end
 
 # ╔═╡ 6fbcf0fc-2c1e-4bdd-8430-709a28b1c238
@@ -138,18 +138,9 @@ function SampleFacilityLocation(
         JuMP.fix.(y, yfix)
     end
 
-    JuMP.set_optimizer(m, GLPK.Optimizer)
-    JuMP.set_optimizer_attribute(m, "msg_lev", GLPK.GLP_MSG_ERR)
-    JuMP.set_optimizer_attribute(m, "fp_heur", GLPK.GLP_ON)
-    #JuMP.set_optimizer_attribute(m, "ps_heur", GLPK.GLP_ON)
-    JuMP.set_optimizer_attribute(m, "gmi_cuts", GLPK.GLP_ON)
-    JuMP.set_optimizer_attribute(m, "mir_cuts", GLPK.GLP_ON)
-    #JuMP.set_optimizer_attribute(m, "cov_cuts", GLPK.GLP_ON)
-    #JuMP.set_optimizer_attribute(m, "clq_cuts", GLPK.GLP_ON)
-    JuMP.set_optimizer_attribute(m, "tm_lim", 60.0 * 1000)
-    #JuMP.set_optimizer_attribute(m, "ps_tm_lim", 5.0 * 1000)
-    JuMP.set_optimizer_attribute(m, "presolve", GLPK.GLP_ON)
-    JuMP.set_optimizer_attribute(m, "mip_gap", 0.01)
+    JuMP.set_optimizer(m, Gurobi.Optimizer)
+    JuMP.set_optimizer_attribute(m, "LogToConsole", 0)
+    JuMP.set_optimizer_attribute(m, "TimeLimit", 60)
     JuMP.optimize!(m)
 
     tcpu = JuMP.solve_time(m)
@@ -158,74 +149,92 @@ function SampleFacilityLocation(
     @assert JuMP.has_values(m) == true
 
     yval = JuMP.value.(y)
+    yval = round.(Int, yval)
     zval = JuMP.value.(z1 .+ z2 .+ z3)
 
     return yval, zval
 end
 
-# ╔═╡ 4dba7117-2be2-4cdf-bcac-98e8017e5130
-let
+# ╔═╡ b4a43fbf-cb3e-49aa-8f3f-cab1d82c2584
+begin
     nE = 3
     de = [quantile.(data1.de, 0.05) quantile.(data1.de, 0.50) quantile.(data1.de, 0.95)]
-
-    @show SampleFacilityLocation(data1, de, nE)
-    @show SampleFacilityLocation(data1, de, nE, pE = [0.15, 0.70, 0.15])
-    @show SampleFacilityLocation(data1, de, nE, yfix = [1, 0, 0, 0, 0, 0, 0, 0, 0, 1])
-    @show SampleFacilityLocation(data1, de, nE, pE = [0.3, 0.4, 0.3], yfix = [1, 0, 0, 0, 0, 0, 0, 0, 0, 1])
-
 end
 
-# ╔═╡ 7612a464-6c1f-42cb-814d-281b2bd4fa8f
-function SSA()
-    for i in 1:3
-        println("** iter $i")
-        nSA = 10 * i
-        nE1 = 15 * i
-        nE2 = 1000 * i
+# ╔═╡ 764ee67c-663c-4b5b-8f49-a072e299cdb9
+SampleFacilityLocation(data1, de, nE)
 
-        # step 1
-        println("* step 1")
-        s1_yval::Array{Array{Int,1},1} = []
-        s1_zavg::Array{Float64,1} = []
-        for sa in 1:nSA
-            de1 = reduce(hcat, [rand.(data1.de) for _ in 1:nE1])
-            yval1, zval1 = SampleFacilityLocation(data1, de1, nE1)
+# ╔═╡ 6c69873c-52a1-4a20-9d90-99137cb95416
+SampleFacilityLocation(data1, de, nE, pE = [0.15, 0.70, 0.15])
 
-            push!(s1_yval, yval1)
-            push!(s1_zavg, mean(zval1))
-        end
+# ╔═╡ 6402aee3-c3d9-4124-848b-2e0ae0223ae9
+SampleFacilityLocation(data1, de, nE, yfix = [1, 0, 0, 0, 0, 0, 0, 0, 0, 1])
 
-        # step 2
-        println("* step 2")
-        @show zavg = mean(s1_zavg)
-        @show zvar = var(s1_zavg) * inv(nSA)
+# ╔═╡ 4dba7117-2be2-4cdf-bcac-98e8017e5130
+SampleFacilityLocation(data1, de, nE, pE = [0.3, 0.4, 0.3], yfix = [1, 0, 0, 0, 0, 0, 0, 0, 0, 1])
 
-        # step 3
-        println("* step 3")
-        s2_zavg::Array{Float64,1} = []
-        s2_zvar::Array{Float64,1} = []
-        for m in 1:nSA
-            yval0 = s1_yval[m]
-            de2 = reduce(hcat, [rand.(data1.de) for _ in 1:nE2])
-            yval2, zval2 = SampleFacilityLocation(data1, de2, nE2, yfix = yval0)
-            @assert yval2 == yval0
-            push!(s2_zavg, mean(zval2))
-            push!(s2_zvar, var(zval2) * inv(nE2))
-        end
+# ╔═╡ 27c82989-e7e3-432a-9c9a-db3bc52635ac
+md"""
+## SSA
+"""
 
-        # step 4
-        println("* step 4")
-        @show idx = argmin(s2_zavg)
-        @show gapp = s2_zavg[idx] - zavg
-        @show gaa1 = gapp / zavg
-        @show gvar = s2_zvar[idx] + zvar
+# ╔═╡ b7394c26-2751-4ba1-985b-70658b537a7c
+begin
+    factor = 1
+    nSA = 10 * factor
+    nE1 = 15 * factor
+    nE2 = 1000 * factor
+end
+
+# ╔═╡ ce08ddeb-fcec-4c4a-ab5f-1ff6585c2d27
+begin
+    # step 1
+    s1_yval::Array{Array{Int,1},1} = []
+    s1_zavg::Array{Float64,1} = []
+    for sa in 1:nSA
+        de1 = reduce(hcat, [rand.(data1.de) for _ in 1:nE1])
+        yval1, zval1 = SampleFacilityLocation(data1, de1, nE1)
+
+        push!(s1_yval, yval1)
+        push!(s1_zavg, mean(zval1))
     end
 
-    return
+    [s1_zavg s1_yval]
 end
 
-# ╔═╡ 3f31e641-5c83-45e2-bdaf-08326a30e7e6
-SSA()
+# ╔═╡ 116eba7c-6a2b-478f-aaa4-3f85d19f6d51
+begin
+    # step 2
+    println("* step 2")
+    @show zavg = mean(s1_zavg)
+    @show zvar = var(s1_zavg) * inv(nSA)
+end
+
+# ╔═╡ fc45fe9a-9ff3-49ec-9ef9-aface4573642
+begin
+    # step 3
+    s2_zavg::Array{Float64,1} = []
+    s2_zvar::Array{Float64,1} = []
+    for m in 1:nSA
+        yval0 = s1_yval[m]
+        de2 = reduce(hcat, [rand.(data1.de) for _ in 1:nE2])
+        yval2, zval2 = SampleFacilityLocation(data1, de2, nE2, yfix = yval0)
+        @assert yval2 == yval0
+        push!(s2_zavg, mean(zval2))
+        push!(s2_zvar, var(zval2) * inv(nE2))
+    end
+    s2_zavg
+end
+
+# ╔═╡ d0a498d0-166d-479a-8679-da64aacaf6f2
+begin
+    # step 4
+    println("* step 4")
+    @show idx = argmin(s2_zavg)
+    @show gapp = s2_zavg[idx] - zavg
+    @show gaa1 = gapp / zavg
+    @show gvar = s2_zvar[idx] + zvar
+end
 
 # ╔═╡ Cell order:
 # ╟─93de468e-20be-11ec-0a46-ff4fd7cb118e
@@ -234,6 +243,14 @@ SSA()
 # ╠═6fbcf0fc-2c1e-4bdd-8430-709a28b1c238
 # ╠═26cf03f3-57fe-40ac-8df8-42245fae7bb6
 # ╠═c41f59e5-623c-4019-a86c-70a72a902eef
+# ╠═b4a43fbf-cb3e-49aa-8f3f-cab1d82c2584
+# ╠═764ee67c-663c-4b5b-8f49-a072e299cdb9
+# ╠═6c69873c-52a1-4a20-9d90-99137cb95416
+# ╠═6402aee3-c3d9-4124-848b-2e0ae0223ae9
 # ╠═4dba7117-2be2-4cdf-bcac-98e8017e5130
-# ╠═7612a464-6c1f-42cb-814d-281b2bd4fa8f
-# ╠═3f31e641-5c83-45e2-bdaf-08326a30e7e6
+# ╟─27c82989-e7e3-432a-9c9a-db3bc52635ac
+# ╠═b7394c26-2751-4ba1-985b-70658b537a7c
+# ╠═ce08ddeb-fcec-4c4a-ab5f-1ff6585c2d27
+# ╠═116eba7c-6a2b-478f-aaa4-3f85d19f6d51
+# ╠═fc45fe9a-9ff3-49ec-9ef9-aface4573642
+# ╠═d0a498d0-166d-479a-8679-da64aacaf6f2

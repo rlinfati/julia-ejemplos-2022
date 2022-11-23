@@ -9,23 +9,11 @@ begin
     import Pkg
     Pkg.UPDATED_REGISTRY_THIS_SESSION[] = true
     Pkg.activate(; temp = false)
-    Pkg.add(
-        [
-            Pkg.PackageSpec("Plots")
-            Pkg.PackageSpec("JuMP")
-            Pkg.PackageSpec("GLPK")
-            Pkg.PackageSpec("HiGHS")
-            Pkg.PackageSpec("SCIP")
-            Pkg.PackageSpec("DataFrames")
-            Pkg.PackageSpec("Distributions")
-            Pkg.PackageSpec("CSV")
-            Pkg.PackageSpec("JSON")
-            Pkg.PackageSpec("XLSX")
-            Pkg.PackageSpec("Graphs")
-            Pkg.PackageSpec("GraphPlot")
-            Pkg.PackageSpec("LightOSM")
-        ],
-    )
+    Pkg.add([
+        Pkg.PackageSpec("Plots")
+        Pkg.PackageSpec("JuMP")
+        Pkg.PackageSpec("GLPK")
+    ])
     Pkg.status()
     md"""
     **NOTE:** remove this cell/code

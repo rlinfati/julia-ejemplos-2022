@@ -9,14 +9,12 @@ begin
     import Pkg
     Pkg.UPDATED_REGISTRY_THIS_SESSION[] = true
     Pkg.activate(; temp = false)
-    Pkg.add(
-        [
-            Pkg.PackageSpec("Plots")
-            Pkg.PackageSpec("ImageShow")
-            Pkg.PackageSpec("ImageIO")
-            Pkg.PackageSpec("PNGFiles")
-        ],
-    )
+    Pkg.add([
+        Pkg.PackageSpec("Plots")
+        Pkg.PackageSpec("ImageShow")
+        Pkg.PackageSpec("ImageIO")
+        Pkg.PackageSpec("PNGFiles")
+    ])
     Pkg.status()
     md"""
     **NOTE:** remove this cell/code

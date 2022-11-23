@@ -87,35 +87,18 @@ XLSX.openxlsx("elmer-" * Dates.format(Dates.today(), "yyyy-mm-dd") * ".xlsx", mo
     push!(df_run, "9041-M", "8525-M", "9042-M") # ESTRATEGICO
     push!(df_run, "8377-L", "9067-L", "9043-L", "8448-L", "8555-L") # PORTAFOLIO ACTIVO
     push!(df_run, "10059-DIGITAL", "10060-DIGITAL", "10058-DIGITAL") # DIGITAL
-    # BANCHILE - APV
-    push!(df_run, "8054-B", "8088-B") # Accionario Desarrollado - Emergente
-    push!(df_run, "9041-B", "8525-B", "9042-B") # ESTRATEGICO
-    push!(df_run, "8377-B", "9067-B", "9043-B", "8448-B", "8555-B") # PORTAFOLIO ACTIVO
-    push!(df_run, "10059-APVDIGITAL", "10060-APVDIGITAL", "10058-APVDIGITAL") # DIGITAL
     # BCI
     push!(df_run, "8625-CLASI", "8710-CLASI") # Accionario Desarrollado - Emergente
     push!(df_run, "8813-CLASI") # Indices
     push!(df_run, "8976-INVER", "9061-INVER", "9063-INVER", "9062-INVER", "9060-INVER") # CARTERA PATRIMONIAL
     push!(df_run, "8731-CLASI", "9228-CLASI", "8638-CLASI", "8639-CLASI", "8640-CLASI") # CARTERA DINAMICA
-    # BCI - APV
-    push!(df_run, "8625-APV", "8710-APV") # Accionario Desarrollado - Emergente
-    push!(df_run, "8813-APV") # Indices
-    push!(df_run, "8976-APV", "9061-APV", "9063-APV", "9062-APV", "9060-APV") # CARTERA PATRIMONIAL
-    push!(df_run, "8731-APV", "9228-APV", "8638-APV", "8639-APV", "8640-APV") # CARTERA DINAMICA
     # FINTUAL
     push!(df_run, "9568-A", "9569-A", "9570-A") # FINTUAL
     push!(df_run, "9730-A") # FINTUAL
-    # FINTUAL - APV
-    push!(df_run, "9568-APV", "9569-APV", "9570-APV") # FINTUAL
     # ITAU
     push!(df_run, "9922-F1", "9931-F1") # Accionario Desarrollado - Emergente
     push!(df_run, "8994-F1", "8992-F1", "8993-F1", "8971-F1") # GESTIONADO
-    push!(df_run, "10020-F1", "10021-F1", "10063-F1", "10064-F1") # CARTERA
-    # ITAU - APV
-    push!(df_run, "9922-APV", "9931-APV") # Accionario Desarrollado - Emergente
-    push!(df_run, "8994-APV", "8992-APV", "8993-APV", "8971-APV") # GESTIONADO
-    push!(df_run, "8994-APV2", "8992-APV2", "8993-APV2", "8971-APV2") # GESTIONADO
-    push!(df_run, "10020-APV", "10021-APV", "10063-APV", "10064-APV") # CARTERA
+    push!(df_run, "10020-SIMPLE", "10021-SIMPLE", "10063-SIMPLE", "10064-SIMPLE") # CARTERA
 
     df_cols = [Symbol("Rentb1 mes"), :Rentb3m, :RentbY, :Rentb12m]
     push!(df_cols, :FondoFull, :adm, :Run, :TAC, :Fondo)
