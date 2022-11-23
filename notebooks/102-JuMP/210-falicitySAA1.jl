@@ -22,7 +22,7 @@ let
 end
 
 # ╔═╡ 12077c04-7df7-4d8a-ba0f-812d2b8189c3
-using JuMP, Gurobi, Distributions, Statistics
+using JuMP, HiGHS, Distributions, Statistics
 
 # ╔═╡ 22ffa5b6-111c-4752-a2e9-9cc26080ab00
 struct FacilityLocation
@@ -138,9 +138,9 @@ function SampleFacilityLocation(
         JuMP.fix.(y, yfix)
     end
 
-    JuMP.set_optimizer(m, Gurobi.Optimizer)
-    JuMP.set_optimizer_attribute(m, "LogToConsole", 0)
-    JuMP.set_optimizer_attribute(m, "TimeLimit", 60)
+    JuMP.set_optimizer(m, HiGHS.Optimizer)
+    JuMP.set_optimizer_attribute(m, "log_to_console", false)
+    JuMP.set_optimizer_attribute(m, "time_limit", 60.0)
     JuMP.optimize!(m)
 
     tcpu = JuMP.solve_time(m)
